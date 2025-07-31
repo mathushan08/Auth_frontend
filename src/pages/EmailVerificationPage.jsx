@@ -1,27 +1,26 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { motion } from "framer-motion";
+import axios from "axios";
+// eslint-disable-next-line no-unused-vars
+import { motion } from 'framer-motion';
 
 const EmailVerificationPage = () => {
   const [code, setCode] = useState(["", "", "", "", "", ""]);
+  const [error, setError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const inputRefs = useRef([]);
   const navigate = useNavigate();
-  const isLoading = false;
 
   const handleChange = (index, value) => {
-    // Only allow numeric input
     if (/[^0-9]/.test(value)) return;
-
     const newCode = [...code];
 
-    // Handle pasted content
     if (value.length > 1) {
-      const pastedCode = value.slice(0, 6).split("");  // Split pasted value
+      const pastedCode = value.slice(0, 6).split("");
       for (let i = 0; i < 6; i++) {
-        newCode[i] = pastedCode[i] || "";  // Assign pasted digits
+        newCode[i] = pastedCode[i] || "";
       }
       setCode(newCode);
-
       const lastFilledIndex = newCode.findLastIndex((digit) => digit !== "");
       const focusIndex = lastFilledIndex < 5 ? lastFilledIndex + 1 : 5;
       inputRefs.current[focusIndex].focus();
@@ -40,27 +39,40 @@ const EmailVerificationPage = () => {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const verificationCode = code.join("");
-    alert(`verification code submitted: ${verificationCode}`);
+
+    try {
+      setIsLoading(true);
+      setError(null);
+      const response = await axios.post(
+        "http://localhost:5000/api/auth/verify-email",
+        { code: verificationCode }
+      );
+
+      if (response.data.success) {
+        navigate("/login"); // or redirect to dashboard if auto-login
+      } else {
+        setError(response.data.message || "Verification failed.");
+      }
+    } catch (err) {
+      console.error("Verification error", err);
+      setError(err.response?.data?.message || "Something went wrong.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handlePaste = (e) => {
     e.preventDefault();
-    const pastedData = e.clipboardData.getData("text").slice(0, 6);  // Limit pasted data to 6 characters
+    const pastedData = e.clipboardData.getData("text").slice(0, 6);
     const newCode = pastedData.split("").map((char) => (/\d/.test(char) ? char : ""));
     setCode(newCode);
     const lastFilledIndex = newCode.findLastIndex((digit) => digit !== "");
     const focusIndex = lastFilledIndex < 5 ? lastFilledIndex + 1 : 5;
     inputRefs.current[focusIndex].focus();
   };
-
-  useEffect(() => {
-    if (code.every((digit) => digit !== "")) {
-      handleSubmit(new Event("submit"));
-    }
-  }, [code]);
 
   return (
     <div className="max-w-md w-full bg-white/20 bg-opacity-50 backdrop-filter backdrop-blur-xl rounded-2xl shadow-xl overflow-hidden">
@@ -78,6 +90,8 @@ const EmailVerificationPage = () => {
           Enter the 6-digit code sent to your email address.
         </p>
 
+        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="flex justify-between">
             {code.map((digit, index) => (
@@ -89,7 +103,7 @@ const EmailVerificationPage = () => {
                 value={digit}
                 onChange={(e) => handleChange(index, e.target.value)}
                 onKeyDown={(e) => handleKeyDown(index, e)}
-                onPaste={handlePaste}  // Handle paste event
+                onPaste={handlePaste}
                 className="w-12 h-12 text-center text-2xl font-bold bg-gray-200 text-gray-700 border-2 border-gray-400 rounded-lg focus:border-blue-500 focus:outline-none"
               />
             ))}

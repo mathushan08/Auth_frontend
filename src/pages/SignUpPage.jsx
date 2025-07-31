@@ -1,396 +1,11 @@
-
-/*
-import React, { useState } from 'react';
-import { motion } from 'framer-motion';
-import Input from '../components/Input';
-import PasswordStrengthMeter from '../components/PasswordStrengthMeter';
-import { User, Mail, Lock } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
-
-const SignUpPage = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const navigate = useNavigate();
-
-  const handleSignUp = (e) => {
-    e.preventDefault();
-    console.log('Full Name:', name);
-    console.log('Email:', email);
-    console.log('Password:', password);
-
-      if (email && password) {
-          navigate('/verify-email'); 
-        } else {
-          alert("Please enter email and password");
-        }
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className='max-w-md w-full bg-white/10 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 overflow-hidden'
-    >
-      <div className='p-8'>
-        <h2 className='text-3xl font-bold mb-6 text-center bg-gradient-to-r from-purple-700 to-emerald-500 text-transparent bg-clip-text'>
-          Create Account
-        </h2>
-        <form onSubmit={handleSignUp}>
-          <Input
-            icon={User}
-            type='text'
-            placeholder='Full Name'
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <Input
-            icon={Mail}
-            type='email'
-            placeholder='Email Address'
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Input
-            icon={Lock}
-            type='password'
-            placeholder='Password'
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-          <PasswordStrengthMeter password={password} />
-          <motion.button
-            type='submit'
-            className='mt-5 w-full py-3 px-4 bg-gradient-to-r from-purple-700 
-            to-emerald-500 text-white font-bold rounded-lg shadow-lg hover:from-purple-600 hover:to-emerald-700 focus:outline-none 
-            focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-900 transition duration-200'
-          >
-            Sign Up
-          </motion.button>
-        </form>
-      </div>
-      <div className='px-8 py-4 bg-gray-300 bg-opacity-50 flex justify-center'>
-        <p className='text-sm text-gray-900'>
-          Already have an account?{' '}
-          <Link to='/login' className='text-blue-600 hover:underline'>
-            Login
-          </Link>
-        </p>
-      </div>
-    </motion.div>
-  );
-};
-
-export default SignUpPage; */
-
-
-/*
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
 import Input from '../components/Input';
 import PasswordStrengthMeter from '../components/PasswordStrengthMeter';
-import { User, Mail, Lock } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
-
-const SignUpPage = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [strength, setStrength] = useState(0);
-  const navigate = useNavigate();
-
-  // Debug print for strength
-  useEffect(() => {
-    console.log('Password strength:', strength);
-  }, [strength]);
-
-  const isValidEmail = (email) => {
-    // Basic email regex validation
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
-
-  const handleSignUp = (e) => {
-    e.preventDefault();
-
-    const trimmedName = name.trim();
-    const trimmedEmail = email.trim();
-    const trimmedPassword = password.trim();
-
-    if (!trimmedName || !trimmedEmail || !trimmedPassword) {
-      alert('Please fill all fields.');
-      return;
-    }
-
-    if (!isValidEmail(trimmedEmail)) {
-      alert('Please enter a valid email address.');
-      return;
-    }
-
-    if (strength < 3) {
-      alert('Please enter a stronger password.');
-      return;
-    }
-
-    console.log('Full Name:', trimmedName);
-    console.log('Email:', trimmedEmail);
-    console.log('Password:', trimmedPassword);
-
-    navigate('/verify-email');
-  };
-
-  const updateStrength = (newStrength) => {
-    setStrength(newStrength);
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="max-w-md w-full bg-white/10 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 overflow-hidden"
-    >
-      <div className="p-8">
-        <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-purple-700 to-emerald-500 text-transparent bg-clip-text">
-          Create Account
-        </h2>
-        <form onSubmit={handleSignUp}>
-  <Input
-    icon={User}
-    type="text"
-    placeholder="Full Name"
-    value={name}
-    onChange={(e) => setName(e.target.value)}
-  />
-  <Input
-    icon={Mail}
-    type="email"
-    placeholder="Email Address"
-    value={email}
-    onChange={(e) => setEmail(e.target.value)}
-  />
-  <Input
-    icon={Lock}
-    type="password"
-    placeholder="Password"
-    value={password}
-    onChange={(e) => setPassword(e.target.value)}
-  />
-  <PasswordStrengthMeter password={password} updateStrength={updateStrength} />
-
-  {strength < 3 && password.length > 0 && (
-    <p className="text-sm text-red-600 mt-1">
-      Please enter a stronger password to continue.
-    </p>
-  )}
-
-  <motion.button
-    type="submit"
-    className="mt-5 w-full py-3 px-4 bg-gradient-to-r from-purple-700 
-               to-emerald-500 text-white font-bold rounded-lg shadow-lg hover:from-purple-600 hover:to-emerald-700 
-               focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-900 transition duration-200"
-    disabled={strength < 3}
-  >
-    Sign Up
-  </motion.button>
-</form>
-
-      </div>
-      <div className="px-8 py-4 bg-gray-300 bg-opacity-50 flex justify-center">
-        <p className="text-sm text-gray-900">
-          Already have an account?{' '}
-          <Link to="/login" className="text-blue-600 hover:underline">
-            Login
-          </Link>
-        </p>
-      </div>
-    </motion.div>
-  );
-};
-
-export default SignUpPage; 
-
-*/
-
-/*
-
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import Input from '../components/Input';
-import PasswordStrengthMeter from '../components/PasswordStrengthMeter';
-import { User, Mail, Lock } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
-
-const SignUpPage = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [userType, setUserType] = useState('');
-  const [strength, setStrength] = useState(0);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    console.log('Password strength:', strength);
-  }, [strength]);
-
-  const isValidEmail = (email) => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  };
-
-  const handleSignUp = (e) => {
-    e.preventDefault();
-
-    const trimmedName = name.trim();
-    const trimmedEmail = email.trim();
-    const trimmedPassword = password.trim();
-
-    if (!trimmedName || !trimmedEmail || !trimmedPassword || !userType) {
-      alert('Please fill all fields and select a user type.');
-      return;
-    }
-
-    if (!isValidEmail(trimmedEmail)) {
-      alert('Please enter a valid email address.');
-      return;
-    }
-
-    if (strength < 3) {
-      alert('Please enter a stronger password.');
-      return;
-    }
-
-    console.log('Full Name:', trimmedName);
-    console.log('Email:', trimmedEmail);
-    console.log('Password:', trimmedPassword);
-    console.log('User Type:', userType);
-
-    navigate('/verify-email');
-  };
-
-  const updateStrength = (newStrength) => {
-    setStrength(newStrength);
-  };
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="max-w-md w-full bg-white/20 backdrop-blur-md rounded-2xl shadow-xl border border-white/20 overflow-hidden"
-    >
-      <div className="p-8">
-        <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-purple-700 to-emerald-500 text-transparent bg-clip-text">
-          Create Account
-        </h2>
-        <form onSubmit={handleSignUp}>
-          <Input
-            icon={User}
-            type="text"
-            placeholder="Full Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <Input
-            icon={Mail}
-            type="email"
-            placeholder="Email Address"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Input
-            icon={Lock}
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-
-          <div className="mt-4">
-            <select
-              value={userType}
-              onChange={(e) => setUserType(e.target.value)}
-              className='w-full pl-4 pr-3 py-2 bg-gray-100 bg-opacity-50 rounded-lg border border-purple-700 focus:border-purple-500 focus:ring-2 focus:ring-purple-500 text-black placeholder-gray-500 transition duration-200'
-            >
-              <option value="" disabled>Select User Type</option>
-              <option value="student">Student</option>y
-              <option value="teacher">Teacher</option>
-            </select>
-          </div>
-
-          <PasswordStrengthMeter password={password} updateStrength={updateStrength} />
-
-          {strength < 3 && password.length > 0 && (
-            <p className="text-sm text-red-600 mt-1">
-              Please enter a stronger password to continue.
-            </p>
-          )}
-
-          <motion.button
-            type="submit"
-            className="mt-5 w-full py-3 px-4 bg-gradient-to-r from-purple-700 
-                   to-emerald-500 text-white font-bold rounded-lg shadow-lg hover:from-purple-600 hover:to-emerald-700 
-                   focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-900 transition duration-200"
-            disabled={strength < 3}
-          >
-            Sign Up
-          </motion.button>
-        </form>
-      </div>
-      <div className="px-8 py-4 bg-gray-300 bg-opacity-50 flex justify-center">
-        <p className="text-sm text-gray-900">
-          Already have an account?{' '}
-          <Link to="/login" className="text-blue-600 hover:underline">
-            Login
-          </Link>
-        </p>
-      </div>
-    </motion.div>
-  );
-};   
-
-export default SignUpPage; 
-
-
-// No more manual alerts for missing fields and no email regex validation here
-  // The browser will handle this via native validation
-  /*const handleSignUp = (e) => {
-    // Check if the form fields are valid by using checkValidity()
-    const form = e.target;
-    if (!form.checkValidity()) {
-      // Let the browser show validation errors
-      return;
-    }
-
-    // Additional custom validation: password strength
-    if (strength < 3) {
-      e.preventDefault();
-      alert('Please enter a stronger password.');
-      return;
-    }
-
-    e.preventDefault(); // Prevent actual form submission in SPA
-
-    // Submit logic here
-    console.log('Full Name:', name.trim());
-    console.log('Email:', email.trim());
-    console.log('Password:', password.trim());
-    console.log('User Type:', userType);
-
-    navigate('/verify-email'); // Navigate after successful validation
-  }; */
-
-
-
-
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import Input from '../components/Input';
-import PasswordStrengthMeter from '../components/PasswordStrengthMeter';
-import { User, Mail, Lock , Loader } from 'lucide-react';
+import { User, Mail, Lock, Loader } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
-
+// eslint-disable-next-line no-unused-vars
+import { motion } from 'framer-motion';
 
 const SignUpPage = () => {
   const [name, setName] = useState('');
@@ -400,27 +15,25 @@ const SignUpPage = () => {
   const [strength, setStrength] = useState(0);
   const navigate = useNavigate();
 
+  const { signup, error, isLoading } = useAuthStore();
+
+  const updateStrength = (newStrength) => {
+    setStrength(newStrength);
+  };
+
   useEffect(() => {
     console.log('Password strength:', strength);
   }, [strength]);
 
-  // Use the same password strength update function
-  const updateStrength = (newStrength) => {
-    setStrength(newStrength);
-  };
-    const {signup,error, isLoading} = useAuthStore();
-
-    const handleSignUp = async(e) => {
-      e.preventDefault();
-
-      try{
-        await signup(email, password, name)
-        navigate ("/verify-email")
-      } catch (error) {
-         console.log(error)
-      }
-
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+    try {
+      await signup(email, password, name, userType); // ✅ Added userType
+      navigate('/verify-email');
+    } catch (error) {
+      console.log(error);
     }
+  };
 
   return (
     <motion.div
@@ -433,7 +46,7 @@ const SignUpPage = () => {
         <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-purple-700 to-emerald-500 text-transparent bg-clip-text">
           Create Account
         </h2>
-        <form onSubmit={handleSignUp} noValidate={false}>
+        <form onSubmit={handleSignUp} noValidate>
           <Input
             icon={User}
             type="text"
@@ -457,7 +70,7 @@ const SignUpPage = () => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required
-            minLength={6} // optional: enforce minimum length on browser validation
+            minLength={6}
           />
 
           <div className="mt-4">
@@ -474,7 +87,9 @@ const SignUpPage = () => {
               <option value="teacher">Teacher</option>
             </select>
           </div>
-           {error && <p className='text-red-500 font-semibold mt-2'>(error)</p>}
+
+          {error && <p className="text-red-500 font-semibold mt-2">{error}</p>}
+
           <PasswordStrengthMeter password={password} updateStrength={updateStrength} />
 
           {strength < 3 && password.length > 0 && (
@@ -486,12 +101,11 @@ const SignUpPage = () => {
           <motion.button
             type="submit"
             className="mt-5 w-full py-3 px-4 bg-gradient-to-r from-purple-700 
-                    to-emerald-500 text-white font-bold rounded-lg shadow-lg hover:from-purple-600 hover:to-emerald-700 
-                    focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-900 transition duration-200"
-            // no disabled, let browser handle validation before submit
+                      to-emerald-500 text-white font-bold rounded-lg shadow-lg hover:from-purple-600 hover:to-emerald-700 
+                      focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 focus:ring-offset-purple-900 transition duration-200"
             disabled={isLoading}
           >
-            {isLoading ? <Loader className='animate-spin mx-auto' size={24} /> : "Sign Up"}
+            {isLoading ? <Loader className="animate-spin mx-auto" size={24} /> : 'Sign Up'}
           </motion.button>
         </form>
       </div>
@@ -507,6 +121,4 @@ const SignUpPage = () => {
   );
 };
 
-export default SignUpPage; 
-
-
+export default SignUpPage;
